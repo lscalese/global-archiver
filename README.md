@@ -1,64 +1,56 @@
-## intersystems-objectscript-template
-This is a template for InterSystems ObjectScript Github repository.
-The template goes also with a few files which let you immedietly compile your ObjecScript files in InterSystems IRIS Community Edition in a docker container
+## global-archiver
 
-## Prerequisites
-Make sure you have [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Docker desktop](https://www.docker.com/products/docker-desktop) installed.
+This is a tool to move a part of a global from a database to another database.  
+A sample will be added soon.  
 
-## Installation 
 
-Clone/git pull the repo into any local directory
+## Run with Docker
 
-```
-$ git clone https://github.com/intersystems-community/objectscript-docker-template.git
-```
+Build: 
 
-Open the terminal in this directory and run:
-
-```
-$ docker-compose build
+```bash
+docker-compose build --no-cache
 ```
 
-3. Run the IRIS container with your project:
+Start container : 
+```bash
+docker-compose up -d
+```
+
+## Installation ZPM
 
 ```
-$ docker-compose up -d
+zpm "install global-archiver"
 ```
 
 ## How to Test it
 
+Create a database named "ARCHIVE"
+
+```objectscript
+Do ##class(lscalese.globalarchiver.sample.DataLog).CreateDB("ARCHIVE")
+```
+
 Open IRIS terminal:
 
+Generate 10 000 records in a sample table.
+
+```objectscript
+Do ##class(lscalese.globalarchiver.sample.DataLog).GenerateData(10000)
 ```
-$ docker-compose exec iris iris session iris
-USER>write ##class(dc.PackageSample.ObjectScript).Test()
+
+Get the last id older than 30 days: 
+```objectscript
+Set lastId = ##class(lscalese.globalarchiver.sample.DataLog).GetLastId(30)
 ```
-## How to start coding
-This repository is ready to code in VSCode with ObjectScript plugin.
-Install [VSCode](https://code.visualstudio.com/), [Docker](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker) and [ObjectScript](https://marketplace.visualstudio.com/items?itemName=daimor.vscode-objectscript) plugin and open the folder in VSCode.
-Open /src/cls/PackageSample/ObjectScript.cls class and try to make changes - it will be compiled in running IRIS docker container.
-![docker_compose](https://user-images.githubusercontent.com/2781759/76656929-0f2e5700-6547-11ea-9cc9-486a5641c51d.gif)
 
-Feel free to delete PackageSample folder and place your ObjectScript classes in a form
-/src/Package/Classname.cls
-[Read more about folder setup for InterSystems ObjectScript](https://community.intersystems.com/post/simplified-objectscript-source-folder-structure-package-manager)
+Copy data older than 30 days to the ARCHIVE database:
+```objectscript
+Set Global = $Name(^lscalese.globalarcCA13.DataLogD)
+Set sc = ##class(lscalese.globalarchiver.Copier).Copy(Global, lastId, "ARCHIVE")
+```
 
-The script in Installer.cls will import everything you place under /src into IRIS.
-
-
-## What's inside the repository
-
-### Dockerfile
-
-The simplest dockerfile which starts IRIS and imports code from /src folder into it.
-Use the related docker-compose.yml to easily setup additional parametes like port number and where you map keys and host folders.
-
-
-### .vscode/settings.json
-
-Settings file to let you immedietly code in VSCode with [VSCode ObjectScript plugin](https://marketplace.visualstudio.com/items?itemName=daimor.vscode-objectscript))
-
-### .vscode/launch.json
-Config file if you want to debug with VSCode ObjectScript
-
-[Read about all the files in this artilce](https://community.intersystems.com/post/dockerfile-and-friends-or-how-run-and-collaborate-objectscript-projects-intersystems-iris)
+Delete data from the source database:
+```
+Set sc = ##class(lscalese.globalarchiver.Cleaner).DeleteArchivedData(Global,"ARCHIVE")
+```
