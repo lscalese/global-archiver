@@ -13,13 +13,24 @@ Index IdxDT On DateTime;
 ClassMethod GenerateData(number As %Integer = 100000) As %Status
 {
     Set sc = $$$OK
-
+    Set dtMin=$ZDT($H-365_",0",3,1)
+    Set dtMax=$ZDT($H-60_",0",3,1)
     For i=1:1:number {
         Set obj = ..%New()
         Set obj.Username = ##class(%PopulateUtils).FirstName()
         Set obj.AccessToPatientId = ##class(%PopulateUtils).Random(1000)
-        Set obj.DateTime = ##class(%PopulateUtils).TimeStamp($ZDT($H-365,3,1), $ZDT($H,3,1))
+        Set dt = ##class(%PopulateUtils).TimeStamp(dtMin, dtMax)
+        Set dtMin = dt
+        Set obj.DateTime = dt
         Do obj.%Save()
+
+        If number-500 = i {
+            Set dtMax=$ZDT($H-15_",0",3,1)
+        }
+
+        If number-250 = i {
+            Set dtMax=$ZDT($H,3,1)
+        }
     }
 
     Return sc

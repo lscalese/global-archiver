@@ -25,17 +25,21 @@ ClassMethod Copy(Global As %String, LastId As %Integer, ArchiveDatabase As %Stri
         Set targetNode = $$$FormatText("^[""^^%1""]%2", targetDirectory, $Extract(Global, 2, *) )
     }
 
-
+    
+    Set sourceDirectory = ""
+    Do ##class(lscalese.globalarchiver.Utils).GetSourceDatabase(Global, .sourceDirectory)
+    
+    Set sourceNode = $$$FormatText("^[""^^%1""]%2", sourceDirectory, $Extract(Global, 2, *) )
 
     Try {
         Set id = "", counter = 0
 
         For  {
-            Set id = $Order(@Global@(id), 1)
+            Set id = $Order(@sourceNode@(id), 1)
             Quit:(id>LastId)||(id="")
 
             TSTART
-            Merge @targetNode@(id) = @Global@(id)
+            Merge @targetNode@(id) = @sourceNode@(id)
             TCOMMIT
 
             Set counter = counter + 1
