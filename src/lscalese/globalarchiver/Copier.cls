@@ -20,7 +20,7 @@ ClassMethod Copy(Global As %String, LastId As %Integer, ArchiveDatabase As %Stri
     Quit:$$$ISERR(sc) sc
 
     If Server '= "" { ; is remote database
-        Set targetNode = $$$FormatText("^[""%1"",""%2""]%3", targetDirectory, server, $Extract(Global, 2, *) )
+        Set targetNode = $$$FormatText("^[""%1"",""%2""]%3", targetDirectory, Server, $Extract(Global, 2, *) )
     } Else {
         Set targetNode = $$$FormatText("^[""^^%1""]%2", targetDirectory, $Extract(Global, 2, *) )
     }
