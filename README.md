@@ -51,6 +51,6 @@ Set sc = ##class(lscalese.globalarchiver.Copier).Copy(Global, lastId, "ARCHIVE")
 ```
 
 Delete data from the source database:
-```
+```objectscript
 Set sc = ##class(lscalese.globalarchiver.Cleaner).DeleteArchivedData(Global,"ARCHIVE")
 ```

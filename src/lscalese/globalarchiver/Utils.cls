@@ -2,10 +2,12 @@ Class lscalese.globalarchiver.Utils
 {
 
 /// Get directory from database name
-ClassMethod GetDirectoryByName(DatabaseName As %String, ByRef sc As %Status = {$$$OK}) As %String
+ClassMethod GetDirectoryByName(DatabaseName As %String, ByRef sc As %Status = {$$$OK}, Output Server As %String) As %String
 {
     New $Namespace
     Set $Namespace = "%SYS"
+
+    Set Server = ""
 
     If '##class(Config.Databases).Exists(DatabaseName) {
         Set sc = $$$ERROR($$$GeneralError, "Database does not exists "_DatabaseName)
@@ -14,6 +16,7 @@ ClassMethod GetDirectoryByName(DatabaseName As %String, ByRef sc As %Status = {$
 
     Do ##class(Config.Databases).Get(DatabaseName, .properties)
 
+    Set Server = properties("Server")
     Return properties("Directory")
 }
 
@@ -72,12 +75,16 @@ ClassMethod CalculateGlobalMapping(Global As %String, ArchiveDatabase, ByRef Con
 {
     Set sc = $$$OK
     
-    Set Directory = ..GetDirectoryByName(ArchiveDatabase, .sc)
+    Set Directory = ..GetDirectoryByName(ArchiveDatabase, .sc, .Server)
     Quit:$$$ISERR(sc) sc
     
     Set:$Extract(Global)="^" Global = $Extract(Global, 2, *)
 
-    Set node = $$$FormatText("^[""^^%1""]%2", Directory, Global)
+    If Server '= "" { ; remote database
+        Set node = $$$FormatText("^[""%1"",""%2""]%3", Directory, Server, Global)
+    } Else {
+        Set node = $$$FormatText("^[""^^%1""]%2", Directory, Global)
+    }
 
     Set firstId = $Order(@node@(""))
     Set lastId = $Order(@node@(""),-1) + .5

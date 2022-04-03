@@ -15,9 +15,15 @@ ClassMethod Copy(Global As %String, LastId As %Integer, ArchiveDatabase As %Stri
         Quit $$$ERROR($$$GeneralError, "Please commit your transaction before calling this method to avoid an huge transaction. $TLEVEL:" _ $TLEVEL )
     }
 
-    Set targetDirectory = ##class(lscalese.globalarchiver.Utils).GetDirectoryByName(ArchiveDatabase)
+    Set targetDirectory = ##class(lscalese.globalarchiver.Utils).GetDirectoryByName(ArchiveDatabase, .sc, .Server)
 
-    Set targetNode = $$$FormatText("^[""^^%1""]%2", targetDirectory, $Extract(Global, 2, *) )
+    Quit:$$$ISERR(sc) sc
+
+    If Server '= "" { ; is remote database
+        Set targetNode = $$$FormatText("^[""%1"",""%2""]%3", targetDirectory, server, $Extract(Global, 2, *) )
+    } Else {
+        Set targetNode = $$$FormatText("^[""^^%1""]%2", targetDirectory, $Extract(Global, 2, *) )
+    }
 
 
 
