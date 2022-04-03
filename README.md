@@ -1,7 +1,7 @@
 ## global-archiver
 
 This is a tool to move a part of a global from a database to another database.  
-A sample will be added soon.  
+A sample involves mirroring and ecp will be added soon.  
 
 
 ## Run with Docker
