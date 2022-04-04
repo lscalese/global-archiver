@@ -1,8 +1,10 @@
 ## global-archiver
 
 This is a tool to move a part of a global from a database to another database.  
-A sample involves mirroring and ecp will be added soon.  
 
+[Article on DC-EN.](https://community.intersystems.com/post/global-archiver-moving-part-global)  
+
+Sample repository with mirroring and ECP: [global-archiver-sample](https://github.com/lscalese/global-archiver-sample)  
 
 ## Run with Docker
 
