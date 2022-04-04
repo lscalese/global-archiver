@@ -1,4 +1,6 @@
 ## global-archiver
+ [![Quality Gate Status](https://community.objectscriptquality.com/api/project_badges/measure?project=intersystems_iris_community%2Fglobal-archiver&metric=alert_status)](https://community.objectscriptquality.com/dashboard?id=intersystems_iris_community%2Fglobal-archiver)
+
 
 This is a tool to move a part of a global from a database to another database.  
 
