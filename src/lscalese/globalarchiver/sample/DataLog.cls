@@ -71,6 +71,7 @@ ClassMethod CreateDB(Name As %String = "ARCHIVE") As %Status
     New $Namespace
     Set $Namespace = "%SYS"
 
+    Set sc = $$$OK
     If ##class(Config.Databases).Exists(Name) { ; already exists do nothing
         Quit $$$OK
     }
