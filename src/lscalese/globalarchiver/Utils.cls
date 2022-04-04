@@ -103,7 +103,6 @@ ClassMethod CalculateGlobalMapping(Global As %String, ArchiveDatabase, ByRef Con
 /// Description
 ClassMethod GetSourceDatabase(Global As %String, ByRef SourceDirectory As %String = "") As %String
 {
-    Set sc = $$$OK
     Set currentNamespace = $Namespace
 
     New $Namespace
